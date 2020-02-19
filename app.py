@@ -22,6 +22,11 @@ api = Api(app)
 #It will enable CORS support on all routes, for all origins and methods.
 CORS(app)
 
+# Root
+@app.route("/", methods=['GET'])
+def helloWorld():
+    return "Welcome to the Stock Portfolio API. There's nothing to see here."
+
 #Decryption Key
 app.secret_key = 'Edwin'
 
