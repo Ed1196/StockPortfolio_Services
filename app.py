@@ -22,8 +22,7 @@ api = Api(app)
 #It will enable CORS support on all routes, for all origins and methods.
 CORS(app)
 
-@app.route('/')
-@app.route('/hello')
+@app.route("/", methods=['GET'])
 def HelloWord():
     return "Hello World"
 
