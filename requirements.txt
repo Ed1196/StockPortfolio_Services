@@ -1,3 +1,5 @@
+uwsgi
+psycopg2
 alpha-vantage==2.1.3
 aniso8601==8.0.0
 Click==7.0
