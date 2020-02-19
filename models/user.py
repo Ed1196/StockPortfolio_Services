@@ -13,7 +13,7 @@ class UserModel():
         self.email = email
         self.password = password
         self.user = ''
-        self.account = '50000.00'
+        self.account = '5000.00'
         self.mystocks = []
 
     def json(self):
