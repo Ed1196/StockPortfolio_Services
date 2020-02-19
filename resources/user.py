@@ -84,7 +84,6 @@ class TokenRefresh(Resource):
         try:
             data = TokenRefresh.parser.parse_args()
             newToken = UserModel.refresh_token(data['refreshToken'])
-            print("Token Refreshed")
             return {'success': True, 'idToken': newToken['idToken'], 'refreshToken': newToken['refreshToken']}
         except:
             return {'success': False, 'message': 'Invalid Refresh Token'}
@@ -118,17 +117,10 @@ class UpdateMyStock(Resource):
 
 class UpdateMyStockCompact(Resource):
     # Variable that will allow us to parse the data when given a request
-    parser = reqparse.RequestParser()
-
-    parser.add_argument('stocks',
-                        type=list,
-                        required=True,
-                        help='This field cannot be left blank!')
 
     @security.myJWT.requires_auth
-    def get(self):
-        data = UpdateMyStockCompact.parser.parse_args()
-        print(data)
+    def post(self):
+        data = request.get_json()
         user = UserModel.find_by_id_token(request.idToken)
         response = UserModel.check_stock_changes_compact(user['users'][0]['localId'], data['stocks'])
         if not response:

@@ -79,7 +79,6 @@ class StockModel():
     @classmethod
     def getStockLatestInfo(cls, symbol):
         api_key = key.returnKey()
-        print(api_key)
         try:
             ts = TimeSeries(key=api_key, output_format='pandas')
             data, meta_data = ts.get_quote_endpoint(symbol=symbol)

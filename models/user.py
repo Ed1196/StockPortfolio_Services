@@ -27,7 +27,6 @@ class UserModel():
     def save_to_db(self):
         # Add account to user authentication list
         self.user = auth.create_user_with_email_and_password(self.email, self.password)
-        print(self.user['idToken'])
         # Add account details to database
         dbUser = {"firstname": self.firstname, "lastname": self.lastname, "email": self.email, "account": self.account}
 
@@ -168,32 +167,33 @@ class UserModel():
         userStocks = db.child("users").child(localId).child("mystocks").get()
         currentPortfolio: float = 0
         stocksDict = {}
-        print(stockList)
         for stock in userStocks.each():
             # Get stock value from db
             userStocks = (stock.key(), stock.val())
 
-
-            if stock in stockList:
+            if userStocks[0] in stockList:
                 try:
                     # Get stock value from Alpha Vantage API
                     currentStock = StockModel.getStockLatestInfo(userStocks[0])
-                    print("APLHA API HIT")
+                    currentStock['price'] = currentStock['close']
+
                 except:
                     return False
             else:
-                currentStock = userStocks[1]
+                currentStock = stock.val()
+                currentStock['close'] = currentStock['price']
 
             if not currentStock:
+
                 return False
 
-            if userStocks[1]['price'] != currentStock['price']:
+            if userStocks[1]['price'] != currentStock['close']:
                 db.child("users").child(localId).child("mystocks").child(userStocks[0]).update(
                     {'price': currentStock['price']})
-                stocksDict[userStocks[0]] = {"price": currentStock['price'],
+                stocksDict[userStocks[0]] = {"price": currentStock['close'],
                                              "quantity": userStocks[1]['quantity'], "open": currentStock['open']}
 
-                currentPortfolio = currentPortfolio + round(Decimal(userStocks[1]['quantity'] * currentStock['price']),
+                currentPortfolio = currentPortfolio + round(Decimal(userStocks[1]['quantity'] * currentStock['close']),
                                                             2)
             else:
                 stocksDict[userStocks[0]] = {"price": userStocks[1]['price'],
